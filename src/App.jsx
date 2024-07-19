@@ -1,16 +1,42 @@
 import React from 'react';
 import './App.css';
-import GoogleLoginButton from './components/GoogleLoginButton';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import HomeLayout from './layouts/HomeLayout';
+import Task from './pages/Task';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 
 const App = () => {
+
+  const router = createBrowserRouter([
+    {
+      path: "/home",
+      element: <HomeLayout />,
+      children: [
+        {
+          path: "/",
+          element: <Navigate to="/task" replace />,
+        },
+        {
+          path: "task",
+          element: <Task />,
+        },
+      ],
+    },
+    {
+      path: "/",
+      element: <Login />,
+    },
+    {
+      path: "/register",
+      element: <Register />,
+    }
+
+  ]);
+
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-red-700 underline">
-        Hello world!
-      </h1>
-      <GoogleLoginButton />
-    </div>
+    <RouterProvider router={router} />
   )
 }
 
