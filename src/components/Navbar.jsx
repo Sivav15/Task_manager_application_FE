@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { FaCalendarAlt } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { logoutReducer } from '../features/authSlice';
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const { token, avatar, firstName } = useSelector((state) => state.auth.auth);
+    const dispatch = useDispatch();
+
     const [isLogin, setLogin] = useState(false);
 
     const values = [
@@ -17,15 +22,15 @@ const Navbar = () => {
         }
     ];
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            setLogin(true);
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (token) {
+    //         setLogin(true);
+    //     }
+    // }, [token]);
 
     const logout = () => {
-        localStorage.clear();
+        dispatch(logoutReducer())
+
         navigate('/');
     };
 
@@ -34,18 +39,19 @@ const Navbar = () => {
             <div>
                 <FaCalendarAlt color="white" size={22} />
             </div>
-            {isLogin ? (
+            {token ? (
                 <div className="flex gap-4 items-center h-full">
-                    <button className="font-semibold px-3 pt-0.5 pb-1 rounded text-white bg-red-500" onClick={logout}>
-                        Logout
-                    </button>
+
                     <div className="rounded-full">
                         <img
-                            src="https://ui-avatars.com/api/?name=s"
-                            alt="Profile"
+                            src={avatar}
+                            alt={firstName}
                             className="rounded-full w-8 h-8 object-cover"
                         />
                     </div>
+                    <button className="font-semibold px-3 pt-0.5 pb-1 rounded text-white bg-red-500" onClick={logout}>
+                        Logout
+                    </button>
                 </div>
             ) : (
                 <div className="flex gap-7 h-full items-center">

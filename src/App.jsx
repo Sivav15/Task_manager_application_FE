@@ -10,8 +10,7 @@ import { useSelector } from 'react-redux';
 
 const App = () => {
 
-  const a = useSelector((state) => state.auth)
-  console.log(a);
+
   const router = createBrowserRouter([
     {
       path: "/",
