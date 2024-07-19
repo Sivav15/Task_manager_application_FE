@@ -5,10 +5,13 @@ import HomeLayout from './layouts/HomeLayout';
 import Task from './pages/Task';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import { useSelector } from 'react-redux';
 
 
 const App = () => {
 
+  const a = useSelector((state) => state.auth)
+  console.log(a);
   const router = createBrowserRouter([
     {
       path: "/",

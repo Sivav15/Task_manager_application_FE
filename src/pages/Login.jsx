@@ -9,6 +9,8 @@ import { login_api } from '../services/api';
 import useSnackbar from '../hooks/useSnackbar';
 import useLoadingModal from '../hooks/useLoadingModal';
 import GoogleLoginButton from '../components/GoogleLoginButton';
+import { useDispatch } from 'react-redux';
+import { authReducer } from '../features/authSlice';
 
 // Define validation schema
 const validationSchema = Yup.object({
@@ -21,7 +23,7 @@ const Login = () => {
     const { showSnackbar, SnackbarComponent } = useSnackbar();
     const { showLoading, hideLoading, LoadingModalComponent } = useLoadingModal();
     const navigate = useNavigate();
-
+    const dispatch = useDispatch()
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -33,7 +35,7 @@ const Login = () => {
                 showLoading()
                 const { data } = await axios.post(login_api, values);
                 showSnackbar(data.message, 'success');
-                localStorage.setItem('token', data.token);
+                dispatch(authReducer(data));
                 navigate('/task');
             } catch (error) {
                 if (error.response) {

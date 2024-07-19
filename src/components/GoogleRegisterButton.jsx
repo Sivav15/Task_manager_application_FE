@@ -4,11 +4,15 @@ import { useGoogleLogin } from '@react-oauth/google';
 import useSnackbar from '../hooks/useSnackbar';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { authReducer } from '../features/authSlice';
+import { useDispatch } from 'react-redux';
 
 
 const GoogleRegisterButton = () => {
     const { showSnackbar, SnackbarComponent } = useSnackbar();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const register = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
@@ -16,7 +20,7 @@ const GoogleRegisterButton = () => {
                     token: tokenResponse.access_token,
                 });
                 showSnackbar(data.message, 'success');
-                localStorage.setItem('token', data.token);
+                dispatch(authReducer(data));
                 navigate('/task');
             } catch (error) {
                 // console.log(error);

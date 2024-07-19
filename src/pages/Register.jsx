@@ -9,6 +9,8 @@ import { register_api } from '../services/api';
 import useSnackbar from '../hooks/useSnackbar';
 import useLoadingModal from '../hooks/useLoadingModal';
 import GoogleRegisterButton from '../components/GoogleRegisterButton';
+import { authReducer } from '../features/authSlice';
+import { useDispatch } from 'react-redux';
 
 
 // Define validation schema
@@ -27,7 +29,7 @@ const Register = () => {
     const { showSnackbar, SnackbarComponent } = useSnackbar();
     const { showLoading, hideLoading, LoadingModalComponent } = useLoadingModal();
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
     const formik = useFormik({
         initialValues: {
             firstName: '',
@@ -42,7 +44,7 @@ const Register = () => {
                 showLoading()
                 const { data } = await axios.post(register_api, values);
                 showSnackbar(data.message, 'success');
-                localStorage.setItem('token', data.token);
+                dispatch(authReducer(data));
                 navigate('/task');
             } catch (error) {
                 if (error.response) {

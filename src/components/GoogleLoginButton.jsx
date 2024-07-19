@@ -4,11 +4,13 @@ import axios from 'axios';
 import { googleLogin_api } from '../services/api';
 import useSnackbar from '../hooks/useSnackbar';
 import { useNavigate } from 'react-router-dom';
+import { authReducer } from '../features/authSlice';
+import { useDispatch } from 'react-redux';
 
 const GoogleLoginButton = () => {
     const { showSnackbar, SnackbarComponent } = useSnackbar();
     const navigate = useNavigate();
-
+    const dispatch = useDispatch()
     const login = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
@@ -16,7 +18,7 @@ const GoogleLoginButton = () => {
                     token: tokenResponse.access_token,
                 });
                 showSnackbar(data.message, 'success');
-                localStorage.setItem('token', data.token);
+                dispatch(authReducer(data));
                 navigate('/task');
             } catch (error) {
                 if (error.response) {
