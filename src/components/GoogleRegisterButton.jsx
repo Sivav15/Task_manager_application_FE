@@ -1,24 +1,25 @@
-import React from 'react';
+import React from 'react'
+import { googleRegister_api } from '../services/api';
 import { useGoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
-import { googleLogin_api } from '../services/api';
 import useSnackbar from '../hooks/useSnackbar';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const GoogleLoginButton = () => {
-    const { showSnackbar, SnackbarComponent } = useSnackbar();
-    const navigate = useNavigate();
 
-    const login = useGoogleLogin({
+const GoogleRegisterButton = () => {
+    const { showSnackbar, SnackbarComponent } = useSnackbar();
+    const navigate = useNavigate()
+    const register = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
-                const { data } = await axios.post(googleLogin_api, {
+                const { data } = await axios.post(googleRegister_api, {
                     token: tokenResponse.access_token,
                 });
                 showSnackbar(data.message, 'success');
                 localStorage.setItem('token', data.token);
                 navigate('/task');
             } catch (error) {
+                // console.log(error);
                 if (error.response) {
                     const { status, data } = error.response;
 
@@ -46,15 +47,15 @@ const GoogleLoginButton = () => {
     return (
         <>
             <button
-                onClick={login}
+                onClick={register}
                 className="mt-4 w-full bg-white border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-100 transition duration-200 flex items-center justify-center"
             >
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5 mr-2" />
-                Login with Google
+                Signup with Google
             </button>
             <SnackbarComponent />
         </>
-    );
-};
+    )
+}
 
-export default GoogleLoginButton;
+export default GoogleRegisterButton

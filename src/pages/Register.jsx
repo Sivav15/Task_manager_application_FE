@@ -1,10 +1,15 @@
-import React from 'react';
-import { TextField, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { TextField, Button, Snackbar, Alert } from '@mui/material';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import * as Yup from 'yup';
 // import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { register_api } from '../services/api';
+import useSnackbar from '../hooks/useSnackbar';
+import useLoadingModal from '../hooks/useLoadingModal';
+import GoogleRegisterButton from '../components/GoogleRegisterButton';
+
 
 // Define validation schema
 const validationSchema = Yup.object({
@@ -18,8 +23,10 @@ const validationSchema = Yup.object({
 });
 
 const Register = () => {
+
+    const { showSnackbar, SnackbarComponent } = useSnackbar();
+    const { showLoading, hideLoading, LoadingModalComponent } = useLoadingModal();
     const navigate = useNavigate();
-    const [loading, setLoading] = React.useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -31,25 +38,38 @@ const Register = () => {
         },
         validationSchema,
         onSubmit: async (values) => {
-            console.log(values);
-            // try {
-            //     setLoading(true);
-            //     const response = await axios.post(`${process.env.REACT_APP_API_URL}/register`, values);
+            try {
+                showLoading()
+                const { data } = await axios.post(register_api, values);
+                showSnackbar(data.message, 'success');
+                localStorage.setItem('token', data.token);
+                navigate('/task');
+            } catch (error) {
+                if (error.response) {
+                    const { status, data } = error.response;
 
-            //     if (response.data.statusCode === 201) {
-            //         toast.success(response.data.message);
-            //         navigate('/login');  // Navigate to login or another page after successful registration
-            //     } else if (response.data.statusCode === 401) {
-            //         toast.warn(response.data.message);
-            //     }
-            // } catch (error) {
-            //     console.error('Error during registration:', error);
-            //     toast.error('Something went wrong. Please try again.');
-            // } finally {
-            //     setLoading(false);
-            // }
+                    if (status >= 500) {
+                        showSnackbar(data.message, 'error');
+                        return
+                    }
+
+                    showSnackbar(data.message, 'warning');
+
+                } else {
+                    showSnackbar('An unexpected error occurred', 'error');
+                }
+            } finally {
+                hideLoading()
+            }
         }
     });
+
+
+
+    const loginNavigation = () => {
+        navigate('/');
+    }
+
 
     return (
         <div className="flex items-center justify-center pt-20">
@@ -140,22 +160,19 @@ const Register = () => {
                             variant="contained"
                             color="primary"
                             fullWidth
-                            disabled={loading}
+                            disabled={formik.isSubmitting}
                         >
-                            {loading ? 'Signing Up...' : 'Signup'}
+                            Signup
                         </Button>
                     </form>
                     <div className="mt-4 text-center">
-                        <p className="text-gray-600">Already have an account? <a href="/login" className="text-blue-600">Login</a></p>
-                        <button
-                            className="mt-4 w-full bg-white border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-100 transition duration-200 flex items-center justify-center"
-                        >
-                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5 mr-2" />
-                            Signup with Google
-                        </button>
+                        <p className="text-gray-600">Already have an account? <span onClick={loginNavigation} className="text-blue-600 cursor-pointer">Login</span></p>
+                        <GoogleRegisterButton />
                     </div>
                 </div>
             </div>
+            <SnackbarComponent />
+            <LoadingModalComponent />
         </div>
     );
 }
