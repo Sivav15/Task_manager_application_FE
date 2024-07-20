@@ -9,7 +9,7 @@ const Navbar = () => {
     const { token, avatar, firstName } = useSelector((state) => state.auth.auth);
     const dispatch = useDispatch();
 
-    const [isLogin, setLogin] = useState(false);
+
 
     const values = [
         {
@@ -22,15 +22,10 @@ const Navbar = () => {
         }
     ];
 
-    // useEffect(() => {
-    //     if (token) {
-    //         setLogin(true);
-    //     }
-    // }, [token]);
+
 
     const logout = () => {
         dispatch(logoutReducer())
-
         navigate('/');
     };
 
