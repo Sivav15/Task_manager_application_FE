@@ -40,6 +40,13 @@ const ListCard = ({ status, tasks }) => {
 
             const findObj = await newTasks.find((item) => item._id == id);
 
+
+
+            dispatch(tasksReducer(newTasks))
+
+
+            setIsDraggingOver(false);
+
             const res = await axios.put(`${updateTask_api}/${id}`, findObj, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -47,11 +54,6 @@ const ListCard = ({ status, tasks }) => {
                 }
             });
 
-
-            dispatch(tasksReducer(newTasks))
-
-
-            setIsDraggingOver(false);
         } catch (error) {
             console.log(error);
         }
@@ -74,17 +76,17 @@ const ListCard = ({ status, tasks }) => {
         try {
             showLoading()
 
-
-            const newTask = tasks.filter((item) => item._id !== id)
-
-            dispatch(tasksReducer(newTask))
-
             const res = await axios.delete(`${deleteTask_api}/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
 
                 }
             });
+
+            const newTask = tasks.filter((item) => item._id !== id)
+
+            dispatch(tasksReducer(newTask))
+
 
         } catch (error) {
             console.log(error);
