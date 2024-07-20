@@ -6,21 +6,26 @@ import useSnackbar from '../hooks/useSnackbar';
 import { useNavigate } from 'react-router-dom';
 import { authReducer } from '../features/authSlice';
 import { useDispatch } from 'react-redux';
+import useLoadingModal from '../hooks/useLoadingModal';
 
 const GoogleLoginButton = () => {
     const { showSnackbar, SnackbarComponent } = useSnackbar();
+    const { showLoading, hideLoading, LoadingModalComponent } = useLoadingModal();
     const navigate = useNavigate();
     const dispatch = useDispatch()
     const login = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
+                showLoading()
                 const { data } = await axios.post(googleLogin_api, {
                     token: tokenResponse.access_token,
                 });
                 showSnackbar(data.message, 'success');
                 dispatch(authReducer(data));
+                hideLoading()
                 navigate('/task');
             } catch (error) {
+                hideLoading()
                 if (error.response) {
                     const { status, data } = error.response;
 
@@ -55,6 +60,7 @@ const GoogleLoginButton = () => {
                 Login with Google
             </button>
             <SnackbarComponent />
+            <LoadingModalComponent />
         </>
     );
 };

@@ -6,23 +6,28 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { authReducer } from '../features/authSlice';
 import { useDispatch } from 'react-redux';
+import useLoadingModal from '../hooks/useLoadingModal';
 
 
 const GoogleRegisterButton = () => {
     const { showSnackbar, SnackbarComponent } = useSnackbar();
+    const { showLoading, hideLoading, LoadingModalComponent } = useLoadingModal();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const register = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
+                showLoading()
                 const { data } = await axios.post(googleRegister_api, {
                     token: tokenResponse.access_token,
                 });
                 showSnackbar(data.message, 'success');
                 dispatch(authReducer(data));
+                hideLoading()
                 navigate('/task');
             } catch (error) {
+                hideLoading()
                 // console.log(error);
                 if (error.response) {
                     const { status, data } = error.response;
@@ -58,6 +63,7 @@ const GoogleRegisterButton = () => {
                 Signup with Google
             </button>
             <SnackbarComponent />
+            <LoadingModalComponent />
         </>
     )
 }
