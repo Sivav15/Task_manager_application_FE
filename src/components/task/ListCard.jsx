@@ -74,16 +74,17 @@ const ListCard = ({ status, tasks }) => {
         try {
             showLoading()
 
+
+            const newTask = tasks.filter((item) => item._id !== id)
+
+            dispatch(tasksReducer(newTask))
+
             const res = await axios.delete(`${deleteTask_api}/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
 
                 }
             });
-            const newTask = tasks.filter((item) => item._id !== id)
-
-            dispatch(tasksReducer(newTask))
-
 
         } catch (error) {
             console.log(error);
