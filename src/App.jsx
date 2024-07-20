@@ -6,6 +6,7 @@ import Task from './pages/Task';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import { useSelector } from 'react-redux';
+import AuthProtectedRoute from './protected route/AuthProtectedRoute';
 
 
 const App = () => {
@@ -22,7 +23,11 @@ const App = () => {
         // },
         {
           path: "task",
-          element: <Task />,
+          element:
+            // <AuthProtectedRoute> 
+            <Task />
+          // </AuthProtectedRoute>
+          ,
         },
         {
           path: "/",
