@@ -1,4 +1,4 @@
-let host = "http://localhost:5000";
+let host = "https://task-manager-application-be.vercel.app";
 
 // Authenticate
 export const register_api = `${host}/api/auth/register`;
