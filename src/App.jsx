@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import { useSelector } from 'react-redux';
 import AuthProtectedRoute from './protected route/AuthProtectedRoute';
+import NotFound from './components/NotFound';
 
 
 const App = () => {
@@ -37,7 +38,15 @@ const App = () => {
           path: "/register",
           element: <Register />,
         },
+        // {
+        //   path: "*",
+        //   element: <NotFound />,
+        // },
       ],
+    },
+    {
+      path: "*",
+      element: <NotFound />,
     },
   ]);
 
