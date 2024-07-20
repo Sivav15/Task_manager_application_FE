@@ -24,9 +24,9 @@ const App = () => {
         {
           path: "task",
           element:
-            // <AuthProtectedRoute> 
-            <Task />
-          // </AuthProtectedRoute>
+            <AuthProtectedRoute>
+              <Task />
+            </AuthProtectedRoute>
           ,
         },
         {

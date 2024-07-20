@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 
 const AuthProtectedRoute = ({ children }) => {
-    const token = useSelector((state) => state.auth.token);
-
+    const { token } = useSelector((state) => state.auth.auth);
+    console.log(token);
     if (!token) {
-        return <Navigate to="/" replace />;
+        return <div>Not found</div>;
     }
 
     return children;
