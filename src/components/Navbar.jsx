@@ -36,7 +36,20 @@ const Navbar = () => {
             </div>
             {token ? (
                 <div className="flex gap-4 items-center h-full">
+                    <NavLink
+                        // key={index}
+                        to={'/task'}
+                        className={({ isActive }) =>
+                            "font-semibold px-3 pt-0.5 pb-1 rounded" +
+                            (isActive ? " text-blue-600 bg-white" : " text-white")
+                        }
+                    >
+                        {'Task'}
+                    </NavLink>
 
+                    <button className="font-semibold px-3 pt-0.5 pb-1 rounded text-white bg-red-500" onClick={logout}>
+                        Logout
+                    </button>
                     <div className="rounded-full">
                         <img
                             src={avatar}
@@ -44,9 +57,6 @@ const Navbar = () => {
                             className="rounded-full w-8 h-8 object-cover"
                         />
                     </div>
-                    <button className="font-semibold px-3 pt-0.5 pb-1 rounded text-white bg-red-500" onClick={logout}>
-                        Logout
-                    </button>
                 </div>
             ) : (
                 <div className="flex gap-7 h-full items-center">

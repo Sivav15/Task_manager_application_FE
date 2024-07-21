@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import HomeLayout from './layouts/HomeLayout';
 import Task from './pages/Task';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import { useSelector } from 'react-redux';
 import AuthProtectedRoute from './protected route/AuthProtectedRoute';
 import NotFound from './components/NotFound';
 
 
 const App = () => {
+
+
 
 
   const router = createBrowserRouter([

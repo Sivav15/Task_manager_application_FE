@@ -1,4 +1,10 @@
-let host = "https://task-manager-application-be.vercel.app";
+let host;
+
+if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+  host = "http://localhost:5000";
+} else {
+  host = "https://task-manager-application-be.vercel.app";
+}
 
 // Authenticate
 export const register_api = `${host}/api/auth/register`;
