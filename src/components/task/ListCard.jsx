@@ -6,6 +6,8 @@ import axios from 'axios';
 import { tasksReducer } from '../../features/tasksSlice';
 import useSnackbar from '../../hooks/useSnackbar';
 import useLoadingModal from '../../hooks/useLoadingModal';
+import convertTo12HourFormatWithDate from '../../utils/convertTo12HourFormatWithDate';
+import useDeleteConfirmation from '../../hooks/useDeleteConfirmation';
 
 const ListCard = ({ status, tasks }) => {
     const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -16,6 +18,7 @@ const ListCard = ({ status, tasks }) => {
     // const tasks = useSelector((state) => state.tasks.tasks);
     const { showSnackbar, SnackbarComponent } = useSnackbar();
     const { showLoading, hideLoading, LoadingModalComponent } = useLoadingModal();
+    const { ConfirmationDialog, showDialog } = useDeleteConfirmation()
 
     const handleClose = () => {
         setOpen(false);
@@ -74,8 +77,15 @@ const ListCard = ({ status, tasks }) => {
 
     const deleteTask = async (id) => {
         try {
-            showLoading()
 
+
+            const confirmToDelete = await showDialog();
+
+            if (!confirmToDelete) {
+                return
+            }
+
+            showLoading()
             const res = await axios.delete(`${deleteTask_api}/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -129,8 +139,8 @@ const ListCard = ({ status, tasks }) => {
                 >
                     <h3 className="text-lg font-semibold">Task : {task.task}</h3>
                     <p>Description : {task.description}</p>
-                    <p className="text-sm text-gray-600">Created at: {task.createdAt}</p>
-                    <p className="text-sm text-gray-600">Updated at: {task.updatedAt}</p>
+                    <p className="text-sm text-gray-600">Created at: {convertTo12HourFormatWithDate(task.createdAt)} </p>
+                    <p className="text-sm text-gray-600">Updated at: {convertTo12HourFormatWithDate(task.updatedAt)}</p>
                     <div className="flex justify-end gap-3 mt-2">
                         <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => deleteTask(task._id)}>Delete</button>
                         <button className="px-5 py-1 bg-yellow-500 text-white rounded" onClick={() => {
@@ -145,6 +155,7 @@ const ListCard = ({ status, tasks }) => {
             <EditTaskModal open={open} onClose={handleClose} data={data} setData={setData} />
             <SnackbarComponent />
             <LoadingModalComponent />
+            <ConfirmationDialog />
         </div>
     );
 };
